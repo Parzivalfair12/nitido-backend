@@ -612,3 +612,13 @@ No cambian el alcance de fondo. **Estado (2026-10-18):** A1, A2, A5 (opción b),
 - Playwright en CI. Necesita levantar API, base y frontend en el runner; queda para una historia posterior a la fase 0.
 - CodeQL y Dependabot. El plan los pide en «Calidad y pruebas»; quedan para una historia posterior a la fase 0.
 - Migraciones sobre base limpia como paso aparte. En la fase 0 las cubre la prueba `Migraciones_SeAplicanSobreBaseLimpia` (F0-02a).
+
+## Resultado de la etapa 2 (2026-10-25)
+
+Hecha con los repositorios públicos [nitido-backend](https://github.com/Parzivalfair12/nitido-backend) y [nitido-frontend](https://github.com/Parzivalfair12/nitido-frontend).
+
+- **Primer push:** los dos CI quedaron en verde sobre `main` (jobs `backend` y `frontend`).
+- **Protección de `main`:** regla «Proteger main» en los dos repositorios, sin excepciones (ni para el dueño): todo entra por pull request, el chequeo `backend` (o `frontend`) debe estar en verde y actualizado respecto de `main`, las conversaciones deben quedar resueltas, y no se permite empujar a la fuerza ni borrar `main`. Al ser repositorios públicos no hace falta un plan de pago (resuelve la pregunta A4).
+- **Pull request en rojo:** [backend #9](https://github.com/Parzivalfair12/nitido-backend/pull/9) y [frontend #6](https://github.com/Parzivalfair12/nitido-frontend/pull/6) llevaban una prueba que fallaba a propósito. El CI salió en rojo ([ejecución del backend](https://github.com/Parzivalfair12/nitido-backend/actions/runs/40240543347), [ejecución del frontend](https://github.com/Parzivalfair12/nitido-frontend/actions/runs/40240552508)) y GitHub marcó el pull request como **bloqueado** («BLOCKED»).
+- **Pull request en verde:** el segundo commit de cada pull request quita la prueba rota; el CI vuelve a verde y el pull request se une con *squash*, para que el commit roto no quede en la historia de `main`.
+- **Pendientes que quedan fuera de la fase 0 (como decía el diseño):** Playwright en el CI, CodeQL y Dependabot.
