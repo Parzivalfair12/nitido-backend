@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aplicacion\Nitido.Clientes.Aplicacion.csproj" />
+    <ProjectReference Include="..\..\..\Nitido.Compartido.Infraestructura\Nitido.Compartido.Infraestructura.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\db\seguridad-por-fila\0002-clientes-politica.sql"
+                      LogicalName="SeguridadPorFila.0002-clientes-politica.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nitido.Pruebas.Integracion" />
+  </ItemGroup>
+
+</Project>

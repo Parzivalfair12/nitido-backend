@@ -1,0 +1,66 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{cs,csx}]
+indent_size = 4
+
+[*.{csproj,props,targets,slnx,xml,config}]
+indent_size = 2
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{cmd,bat}]
+end_of_line = crlf
+
+[*.cs]
+# Organización de usings
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# Preferencias de lenguaje
+csharp_style_namespace_declarations = file_scoped:warning
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_prefer_braces = true:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+
+# Nuevas líneas
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+
+# Nombres: interfaces con I, tipos y miembros públicos en PascalCase
+dotnet_naming_rule.interfaces_con_i.symbols = interfaces
+dotnet_naming_rule.interfaces_con_i.style = prefijo_i
+dotnet_naming_rule.interfaces_con_i.severity = suggestion
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_style.prefijo_i.required_prefix = I
+dotnet_naming_style.prefijo_i.capitalization = pascal_case
+
+dotnet_naming_rule.tipos_pascal.symbols = tipos
+dotnet_naming_rule.tipos_pascal.style = pascal
+dotnet_naming_rule.tipos_pascal.severity = suggestion
+dotnet_naming_symbols.tipos.applicable_kinds = class, struct, enum, delegate
+dotnet_naming_style.pascal.capitalization = pascal_case
+
+# Migraciones generadas por "dotnet ef migrations add": no se reformatean ni se analizan
+[**/Migraciones/*.cs]
+generated_code = true

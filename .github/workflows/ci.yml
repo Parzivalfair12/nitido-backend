@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+
+jobs:
+  backend:
+    name: backend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Instalar .NET según global.json
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      # La caché queda fuera del checkout (~/.nuget/packages): las pruebas de
+      # arquitectura recorren el árbol buscando Directory.Build.props.
+      - name: Caché de paquetes NuGet
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', 'Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restaurar paquetes
+        run: dotnet restore Nitido.slnx
+
+      - name: Compilar en Release (cualquier advertencia es error)
+        run: dotnet build Nitido.slnx -c Release --no-restore -warnaserror
+
+      - name: Revisar el formato
+        run: dotnet format Nitido.slnx --verify-no-changes --no-restore
+
+      # dotnet list package --vulnerable termina con código 0 aunque encuentre
+      # algo, por eso se lee la salida JSON con jq.
+      - name: Buscar paquetes con vulnerabilidades
+        run: |
+          dotnet list Nitido.slnx package --vulnerable --include-transitive --format json --output-version 1 > vulnerables.json
+          jq -e '(.projects | length) > 0' vulnerables.json > /dev/null \
+            || { echo "::error::dotnet list no devolvió proyectos"; exit 1; }
+          jq -e '(.sources // []) | any(. == "https://api.nuget.org/v3/index.json")' vulnerables.json > /dev/null \
+            || { echo "::error::La búsqueda no consultó nuget.org, así que no hay datos de vulnerabilidades"; exit 1; }
+          vulnerables=$(jq -r '[.projects[].frameworks[]? | (.topLevelPackages[]?, .transitivePackages[]?)
+            | select((.vulnerabilities // []) | length > 0) | "\(.id) \(.resolvedVersion)"] | unique | .[]' vulnerables.json)
+          if [ -n "$vulnerables" ]; then
+            echo "::error::Hay paquetes con vulnerabilidades conocidas:"
+            echo "$vulnerables"
+            exit 1
+          fi
+
+      # La etiqueta se lee de la constante ContenedorSqlServer.Imagen para no
+      # tener una segunda copia que se desactualice. El "|| true" evita que
+      # pipefail aborte antes de imprimir el ::error:: si el grep no encuentra nada.
+      - name: Descargar la imagen de SQL Server
+        timeout-minutes: 8
+        run: |
+          imagen=$(grep -oE 'mcr\.microsoft\.com/mssql/server:[A-Za-z0-9._-]+' \
+            tests/integracion/Nitido.Pruebas.Integracion/Ayudantes/ContenedorSqlServer.cs | head -n 1 || true)
+          [ -n "$imagen" ] || { echo "::error::No se encontró la imagen en ContenedorSqlServer.cs"; exit 1; }
+          for _ in 1 2 3; do
+            docker pull --quiet "$imagen" && exit 0
+            sleep 15
+          done
+          exit 1
+
+      - name: Probar (unidad, integración y contables)
+        id: pruebas
+        run: dotnet test Nitido.slnx -c Release --no-build --logger trx --results-directory TestResults
+
+      - name: Subir los resultados TRX
+        if: ${{ !cancelled() && steps.pruebas.outcome != 'skipped' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: resultados-pruebas-backend
+          path: TestResults/**/*.trx
+          if-no-files-found: error
+          retention-days: 14

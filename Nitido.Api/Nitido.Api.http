@@ -1,0 +1,70 @@
+@Nitido.Api_HostAddress = http://localhost:5080
+
+# Las cookies de sesión son Secure: Visual Studio y la extensión REST Client las guardan para localhost aunque sea http.
+# Todo POST necesita el encabezado de antifalsificación: haz primero un GET (por ejemplo /yo) y copia el valor de la
+# cookie XSRF-TOKEN en la variable de abajo.
+@xsrf = <valor de la cookie XSRF-TOKEN>
+
+### Salud: responde 200 con el texto Healthy
+GET {{Nitido.Api_HostAddress}}/salud
+
+### Documento OpenAPI (solo en Development)
+GET {{Nitido.Api_HostAddress}}/openapi/v1.json
+
+### Quién soy (sin sesión responde 401; con cualquier GET se recibe la cookie XSRF-TOKEN)
+GET {{Nitido.Api_HostAddress}}/api/autenticacion/yo
+
+### Registrar una firma y su administrador (solo con Registro:Habilitado=true, que es el caso de Development)
+POST {{Nitido.Api_HostAddress}}/api/firmas/registro
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "nombreFirma": "Mi firma", "administrador": { "nombre": "Ana Pérez", "correo": "ana@ejemplo.co", "clave": "una-clave-larga-123" } }
+
+### Ingresar con correo y contraseña. Responde el paso que sigue: inscribir-segundo-factor o segundo-factor
+POST {{Nitido.Api_HostAddress}}/api/autenticacion/ingreso
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "correo": "ana@ejemplo.co", "clave": "una-clave-larga-123" }
+
+### Segundo factor, primera vez: clave y URI otpauth para la aplicación autenticadora (sesión parcial)
+GET {{Nitido.Api_HostAddress}}/api/autenticacion/segundo-factor/inscripcion
+
+### Segundo factor, primera vez: confirmar con el código de 6 dígitos. Entrega los 10 códigos de recuperación, una sola vez
+POST {{Nitido.Api_HostAddress}}/api/autenticacion/segundo-factor/inscripcion
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "codigo": "123456" }
+
+### Segundo factor: verificar el código de la aplicación (sesión parcial)
+POST {{Nitido.Api_HostAddress}}/api/autenticacion/segundo-factor
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "codigo": "123456" }
+
+### Segundo factor: usar un código de recuperación (sirve una sola vez)
+POST {{Nitido.Api_HostAddress}}/api/autenticacion/segundo-factor/recuperacion
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "codigo": "ABCDE-FGHJK" }
+
+### Salir
+POST {{Nitido.Api_HostAddress}}/api/autenticacion/salida
+X-XSRF-TOKEN: {{xsrf}}
+
+### Crear un cliente (acepta 800197268, 800.197.268 y 800197268-4)
+POST {{Nitido.Api_HostAddress}}/api/clientes
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "razonSocial": "Distribuciones Andina S.A.S.", "numeroDocumento": "800197268" }
+
+### Listar los clientes de la firma
+GET {{Nitido.Api_HostAddress}}/api/clientes
+
+### Un cliente (cambia el UUID por uno de la lista)
+GET {{Nitido.Api_HostAddress}}/api/clientes/00000000-0000-0000-0000-000000000000

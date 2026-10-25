@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="Nitido.Api/Nitido.Api.csproj" />
+    <Project Path="Nitido.Compartido/Nitido.Compartido.csproj" />
+    <Project Path="Nitido.Compartido.Api/Nitido.Compartido.Api.csproj" />
+    <Project Path="Nitido.Compartido.Infraestructura/Nitido.Compartido.Infraestructura.csproj" />
+  </Folder>
+  <Folder Name="/src/Modulos/Clientes/">
+    <Project Path="Modulos/Clientes/Dominio/Nitido.Clientes.Dominio.csproj" />
+    <Project Path="Modulos/Clientes/Aplicacion/Nitido.Clientes.Aplicacion.csproj" />
+    <Project Path="Modulos/Clientes/Infraestructura/Nitido.Clientes.Infraestructura.csproj" />
+    <Project Path="Modulos/Clientes/Api/Nitido.Clientes.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modulos/Firmas/">
+    <Project Path="Modulos/Firmas/Dominio/Nitido.Firmas.Dominio.csproj" />
+    <Project Path="Modulos/Firmas/Aplicacion/Nitido.Firmas.Aplicacion.csproj" />
+    <Project Path="Modulos/Firmas/Infraestructura/Nitido.Firmas.Infraestructura.csproj" />
+    <Project Path="Modulos/Firmas/Api/Nitido.Firmas.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/unidad/Nitido.Pruebas.Unidad/Nitido.Pruebas.Unidad.csproj" />
+    <Project Path="tests/integracion/Nitido.Pruebas.Integracion/Nitido.Pruebas.Integracion.csproj" />
+    <Project Path="tests/contables/Nitido.Pruebas.Contables/Nitido.Pruebas.Contables.csproj" />
+  </Folder>
+</Solution>

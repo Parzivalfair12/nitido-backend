@@ -1,0 +1,3 @@
+<Project>
+  <!-- Vacío a propósito: corta la búsqueda de MSBuild hacia carpetas superiores, porque la carpeta padre nitido/ no es parte del repositorio. -->
+</Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>4829994b-68b5-4cfd-90b9-9d6dbf296fe8</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nitido.Compartido\Nitido.Compartido.csproj" />
+    <ProjectReference Include="..\Nitido.Compartido.Api\Nitido.Compartido.Api.csproj" />
+    <ProjectReference Include="..\Modulos\Firmas\Infraestructura\Nitido.Firmas.Infraestructura.csproj" />
+    <ProjectReference Include="..\Modulos\Firmas\Api\Nitido.Firmas.Api.csproj" />
+    <ProjectReference Include="..\Modulos\Clientes\Infraestructura\Nitido.Clientes.Infraestructura.csproj" />
+    <ProjectReference Include="..\Modulos\Clientes\Api\Nitido.Clientes.Api.csproj" />
+  </ItemGroup>
+
+</Project>

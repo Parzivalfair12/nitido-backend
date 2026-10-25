@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nitido.Compartido\Nitido.Compartido.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nitido.Pruebas.Unidad" />
+    <InternalsVisibleTo Include="Nitido.Pruebas.Integracion" />
+  </ItemGroup>
+
+</Project>

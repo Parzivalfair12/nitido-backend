@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aplicacion\Nitido.Firmas.Aplicacion.csproj" />
+    <ProjectReference Include="..\..\..\Nitido.Compartido.Api\Nitido.Compartido.Api.csproj" />
+  </ItemGroup>
+
+</Project>

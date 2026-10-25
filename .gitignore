@@ -1,0 +1,26 @@
+# .NET
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+.vs/
+*.log
+coverage/
+*.trx
+
+# Secretos locales
+.env
+.env.*
+!.env.example
+
+# Almacén local de archivos (IAlmacenArchivos en disco)
+almacen/
+
+# Editores y sistema operativo
+.idea/
+Thumbs.db
+.DS_Store
+
+# Llavero local de Data Protection (cifra el secreto del doble factor)
+.llavero/
